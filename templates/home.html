@@ -5,7 +5,31 @@
 <div class="container">
     <h2>home.html</h2>
     </div>
+     <div id="mapid"></div>
+    
 </main>
+
+<script>
+var planes = [
+    {% for place in places %}
+    ["<a href="{{ place['url']}}" target="_blank">{{ place['name]}}</a><p>{{ place['time'] }} min away</p>]
+    {% endfor %}
+];
+    
+var map = L.map('map').setview([{{ my_coordinates[0]}},{{ my_coordinates[1]}}],15);
+mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+L.titleLayer(
+'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy:' + mapLink +'Contributors',
+    maxZoom:18,
+}).addTo(map);
+    
+for (var i=0, i < planes.length; i++){
+    
+marker = new L.marker([planes[i][1],planes[i][2]]).bindPopup(planes[i][0]).addTo(map);
+}
+
+</script>
     {% endblock %}
 
 

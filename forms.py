@@ -7,9 +7,13 @@ class SignupForm(Form):
     last_name = StringField('Last name', validators=[DataRequired("Please enter your last name.")])
     email = StringField('Email', validators=[DataRequired("Please enter your email."), Email("Please enter your email.")])
     password = PasswordField('Password', validators=[DataRequired("Please enter your password."), Length(6,"Please lengthen your password.")])
-    submit = SubmitField('SignUp')
+    submit = SubmitField('Sign Up')
     
 class LoginForm(Form):
     email = StringField('Email', validators=[DataRequired("Please enter your email."), Email("Please enter your email.")])
     password = PasswordField('Password', validators=[DataRequired("Please enter your password."), Length(6,"Please lengthen your password.")])
-    submit = SubmitField('SignUp')
+    submit = SubmitField('Log In')
+    
+class AddressForm(Form):
+    address = StringField('Address',validators=[DataRequired("Please enter an address.")])
+    submit = SubmitField('Log In')

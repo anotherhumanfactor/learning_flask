@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, session, redirect, url_for
-from models import db, User
-from forms import SignupForm, LoginForm
+from models import db, User, Place
+from forms import SignupForm, LoginForm, AddressForm
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/learningflask'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///learningflask'
 db.init_app(app)
 
 app.secret_key = "development-key"
@@ -19,6 +19,8 @@ def about():
 
 @app.route("/signup", methods=["GET","POST"])
 def signup():
+    if 'email' in session:
+        return redirect(url_for('home'))
     form = SignupForm()
     
     if request.method == "POST":
@@ -37,6 +39,8 @@ def signup():
 
 @app.route("/login", methods=["GET","POST"])
 def login():
+    if 'email' in session:
+        return redirect(url_for('home'))
     form = LoginForm()
     
     if request.method =="POST":
@@ -63,7 +67,30 @@ def logout():
 
 @app.route("/home", methods=["GET","POST"])
 def home():
-    return render_template("home.html")
+    #protects the home page, turn off to turn on home
+    if 'email' not in session:
+        return redirect(url_for('login'))
+    
+    form = AddressForm()
+    
+    places = []
+    my_coordinates = (0.0000,0.0000) #null island
+    
+    if request.method =="POST":
+        if form.validate == False:
+            return render_template("home.html", form = form)
+        else:
+            #handle form submission
+            #pass
+            address = form.address.data
+            p = Place()
+            my_coordinates = p.address_to_latlng(address)
+            places = p.query(address)
+            
+            return render_template('home.html',form=form, my_coordinates, places=places)
+    
+    elif request.method == "GET":
+        return render_template('home.html',form=form, my_coordinates, places=places)
 
 if __name__ == "__main__":
     app.run(debug=True)
