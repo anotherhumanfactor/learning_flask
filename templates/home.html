@@ -3,10 +3,36 @@
     {% block content %}
 <main class="home-section">
 <div class="container">
-    <h2>home.html</h2>
+    <div class="section-tabs">
+        <div class="places">
+            {% for place in places %}
+            <article>
+            <a class="name" href="{{ places['url'] }}" target="_blank">{{ place['name'] }}</a>
+                <p class="walking-distance" href="{{ places['time'] }}" target="_blank">{{ place['name'] }} min away</a>
+            </article>
+        {% endfor %}
+        </div>
+    </div>
+    <div class="section-map">
+        <div class="nav">
+            <form method="POST" action="/home">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+            {% if form.address.errors %}
+                {% for error in form.address.errors %}
+                <p class="error-message">{{ error }}</p>
+            {% endfor %}
+            {% endif %}
+                {{ form.address(placeholder="Explore nearby") }}
+            </div>
+                {{ form.submit(class="btn-primary")}}
+            </form>
+        </div>
+        <div="map"></div>
+        <div="clearfix"></div>
     </div>
      <div id="mapid"></div>
-    
+    </div>
 </main>
 
 <script>
